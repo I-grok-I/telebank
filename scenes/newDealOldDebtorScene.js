@@ -113,7 +113,7 @@ const margin = new Composer()
 margin.on('callback_query', async (ctx) => {
     await ctx.answerCbQuery()
     if (ctx.callbackQuery.data == 'menu') {
-        await ctx.editMessageText('Главное меню', {reply_markup: {inline_keyboard: constants.MAIN_MENU_BTNS}})
+        await ctx.editMessageText('Главное меню', constants.MAIN_MENU_BTNS)
         await ctx.scene.leave()
     } else {
         ctx.session.data.period = +ctx.callbackQuery.data
@@ -126,8 +126,7 @@ const guarantorStep = new Composer()
 guarantorStep.on('callback_query', async (ctx) => {
     await ctx.answerCbQuery()
     if (ctx.callbackQuery.data == 'menu') {
-        await ctx.editMessageText('Главное меню')
-        await ctx.editMessageReplyMarkup({ inline_keyboard: constants.MAIN_MENU_BTNS })
+        await ctx.editMessageText('Главное меню', constants.MAIN_MENU_BTNS )
         await ctx.scene.leave()
     } else {
         ctx.session.data.margin = +ctx.callbackQuery.data
@@ -139,7 +138,7 @@ guarantorStep.on('callback_query', async (ctx) => {
 const photoStep = new Composer()
 photoStep.on('message', async (ctx) => {
     if (ctx.message.text == 'Отменить сделку') {
-        await ctx.reply('Главное меню', Markup.inlineKeyboard(constants.MAIN_MENU_BTNS))
+        await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
         await ctx.scene.leave()
     } else {
         ctx.session.data.guarantorData = ctx.message.text
@@ -172,7 +171,7 @@ parse_mode: 'HTML',
 reply_markup: {inline_keyboard: constants.CHOICE_BUTTONS} })
 await ctx.wizard.next()
     } else if (ctx.message.text == 'Отменить сделку') {
-        await ctx.reply('Главное меню', Markup.inlineKeyboard(constants.MAIN_MENU_BTNS))
+        await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
         await ctx.scene.leave()
     } else {
         await ctx.replyWithHTML('<b>Фото</b> не было принято. Попробуйте еще раз.')
@@ -218,11 +217,11 @@ updateDb.on('callback_query', async (ctx) => {
             })
         })
         await ctx.editMessageReplyMarkup({ inline_keyboard: [[{text: "Сделка заключена", callback_data: "dealConfirmed"}]] })
-        await ctx.reply('Главное меню', Markup.inlineKeyboard(constants.MAIN_MENU_BTNS))
+        await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
         await ctx.scene.leave();
     } else if (ctx.callbackQuery.data == 'cancelDeal') {
         await ctx.editMessageReplyMarkup({ inline_keyboard: [[{text: "Сделка отменена", callback_data: "dealConfirmed"}]] })
-        await ctx.reply('Главное меню', Markup.inlineKeyboard(constants.MAIN_MENU_BTNS))
+        await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
         await ctx.scene.leave()
     } else await ctx.answerCbQuery('Нажмите на кнопку!')
 })
