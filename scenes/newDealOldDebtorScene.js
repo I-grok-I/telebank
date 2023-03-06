@@ -218,7 +218,7 @@ addPaymentsStep.on('message', async (ctx) => {
           })
       }
     })
-    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅')
+    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅', constants.MAIN_MENU_BTNS)
     await ctx.scene.leave();
   } else if (ctx.message.text == 'Со следующего ⏭') {
       db.get(constants.GET_ORDER_SQL, [ctx.session.data.title, ctx.session.data.monthlyPay], (err, row) => {
@@ -229,7 +229,7 @@ addPaymentsStep.on('message', async (ctx) => {
           })
         }
       })
-    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅')
+    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅', constants.MAIN_MENU_BTNS)
     await ctx.scene.leave();
     } else {
       await ctx.reply('Ошибка. Выберите месяц начала платежей', constants.CHOOSE_START_MON_BTNS)
