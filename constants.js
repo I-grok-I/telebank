@@ -1,5 +1,6 @@
 const {Telegraf, Markup, Composer, Scenes} = require('telegraf');
 
+const CHOOSE_START_MON_BTNS = Markup.keyboard([['⏺ С этого','Со следующего ⏭']]).oneTime().resize()
 
 const PERIOD_BUTTONS = Markup.inlineKeyboard([
   [Markup.button.callback('1', '1'),Markup.button.callback('7', '7'),Markup.button.callback('13', '13')],
@@ -149,6 +150,6 @@ module.exports = {
   UPDATE_COMMENT_SQL,
   GET_EMPLOYEES_SALES_SQL,
   GET_ALL_ORDERS_AND_PAYMENTS,
-
+  CHOOSE_START_MON_BTNS
   }
 

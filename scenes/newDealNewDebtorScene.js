@@ -252,7 +252,6 @@ await ctx.wizard.next()
 
 const updateDb = new Composer()
 updateDb.on('callback_query', async (ctx) => {
-  console.log(`Данные текущей сессии: ` + ctx.session)
   await ctx.answerCbQuery()
   if (ctx.callbackQuery.data == 'applyDeal') {
     let insertData = [
@@ -267,23 +266,12 @@ updateDb.on('callback_query', async (ctx) => {
       0,
       ctx.session.data.guarantorData
     ]
-    db.serialize(() => {
-      db.run(constants.ORDER_INSERT_SQL, insertData, (err) => {
-        if (err) console.log(err.message)
-        console.log('Сделка успешно заключена');       
-      })
-      db.get(constants.GET_ORDER_SQL, [ctx.session.data.title, ctx.session.data.monthlyPay], (err, row) => {
-        if (err) console.log(err.message) 
-        for (let i = 0; i < ctx.session.data.period; i++) {
-          db.run(constants.INSERT_PAYMENTS_SQL, [row.id, ctx.session.data.monthlyPay, new Date(new Date().setMonth(new Date().getMonth() + i)).toISOString().slice(0, 10), 0], (err) => {
-            err ? console.log(err.message) : console.log(this);
-          })
-        }       
-      })
+    db.run(constants.ORDER_INSERT_SQL, insertData, async (err) => {
+      if (err) console.log(err.message)
+      await ctx.editMessageReplyMarkup(Markup.inlineKeyboard([[Markup.button.callback('Сделка заключена✅', '__')]]))
+      await ctx.reply(`✅ Сделка заключена\nОплата со следующего месяца?`, constants.CHOOSE_START_MON_BTNS)
+      await ctx.wizard.next();  
     })
-    await ctx.editMessageReplyMarkup({ inline_keyboard: [[{text: "✅ Сделка заключена", callback_data: "dealConfirmed"}]] })
-    await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
-    await ctx.scene.leave();
   } else if (ctx.callbackQuery.data == 'cancelDeal') {
       await ctx.editMessageReplyMarkup({ inline_keyboard: [[{text: "Сделка отменена", callback_data: "dealConfirmed"}]] })
       await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
@@ -291,10 +279,39 @@ updateDb.on('callback_query', async (ctx) => {
     } else await ctx.answerCbQuery('Нажмите на кнопку!')
 })
 
+const addPaymentsStep = new Composer();
+addPaymentsStep.on('message', async (ctx) => {
+  if (ctx.message.text == '⏺ С этого') {
+    db.get(constants.GET_ORDER_SQL, [ctx.session.data.title, ctx.session.data.monthlyPay], (err, row) => {
+      if (err) console.log(err.message) 
+      for (let i = 0; i < ctx.session.data.period; i++) {
+          db.run(constants.INSERT_PAYMENTS_SQL, [row.id, ctx.session.data.monthlyPay, new Date(new Date().setMonth(new Date().getMonth() + i)).toISOString().slice(0, 10), 0], (err) => {
+              err ? console.log(err.message) : console.log(this);
+          })
+      }
+    })
+    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅')
+    await ctx.scene.leave();
+  } else if (ctx.message.text == 'Со следующего ⏭') {
+      db.get(constants.GET_ORDER_SQL, [ctx.session.data.title, ctx.session.data.monthlyPay], (err, row) => {
+        if (err)  console.log(err.message) 
+        for (let i = 1; i < ctx.session.data.period+1; i++) {
+          db.run(constants.INSERT_PAYMENTS_SQL, [row.id, ctx.session.data.monthlyPay, new Date(new Date().setMonth(new Date().getMonth() + i)).toISOString().slice(0, 10), 0], (err) => {
+              err ? console.log(err.message) : console.log(this);
+          })
+        }
+      })
+    await ctx.replyWithHTML('<b>Платежи добавлены.. </b>✅')
+    await ctx.scene.leave();
+    } else {
+      await ctx.reply('Ошибка. Выберите месяц начала платежей', constants.CHOOSE_START_MON_BTNS)
+    }
+})
 
 
 
 
-const newDealNewDebtorScene = new Scenes.WizardScene('newDealNewDebtorScene', askFirstName, askLastName, askAddress, askPhone, askComment, askPhoto, someStep, productName, cost, period, margin, guarantorStep, photoStep, checkInfoStep, updateDb)
+
+const newDealNewDebtorScene = new Scenes.WizardScene('newDealNewDebtorScene', askFirstName, askLastName, askAddress, askPhone, askComment, askPhoto, someStep, productName, cost, period, margin, guarantorStep, photoStep, checkInfoStep, updateDb, addPaymentsStep)
 module.exports = newDealNewDebtorScene
 

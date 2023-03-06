@@ -44,6 +44,14 @@ bot
   await ctx.scene.enter('addNewEmpScene')
 })
 
+bot.hears('a', async ctx => {
+  for (let i = 1; i < 5; i++) {
+    db.run('INSERT INTO test (title) VALUES (?)', [new Date(new Date().setMonth(new Date().getMonth() + i)).toISOString().slice(0, 10)], (err) => {
+      err ? console.log(err.message) : console.log(this);
+    })
+  } 
+})
+
 
 
 bot.launch();
