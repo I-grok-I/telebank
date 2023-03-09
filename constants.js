@@ -65,7 +65,7 @@ const GET_CIRCULAR_SQL = `SELECT SUM(payment_sum) as circular FROM payments WHER
 
 const GET_NET_PROFIT_SQL = `SELECT SUM(payment_sum) as net_profit FROM payments WHERE is_paid = 1`
 
-const GET_PROFIT_SQL = `SELECT SUM(order_sum - cost) as net_profit FROM orders WHERE is_complete = 1`
+const GET_PROFIT_SQL = `SELECT SUM(order_sum - cost) as net_profit FROM orders WHERE is_complete = 0`
 
 
 const GET_EMPLOYEES_SALES_SQL = `SELECT  full_name, phone, sum(payment_sum) as sum FROM
