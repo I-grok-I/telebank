@@ -36,12 +36,14 @@ second.on('message', async (ctx) => {
               if (err) console.log(err.message)
             })
             await fns.showDealData(ctx, ctx.session.data.currentOrder)
+            await ctx.scene.leave()
           } else if (ctx.message.text == pays[0].payment_sum){
               db.run(constants.UPDATE_PAYMENTS_SQL, [pays[0].payment_id], (err) => {
                 if (err) console.log(err)
                 console.log('Платеж обновлён')
               })
               await fns.showDealData(ctx, ctx.session.data.currentOrder)
+              await ctx.scene.leave()
           } else if (ctx.message.text > pays[0].payment_sum) {
             await ctx.reply('Ошибка. Введите сумме не превышающую сумму платежа!')
           } 
