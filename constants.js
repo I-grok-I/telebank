@@ -13,11 +13,10 @@ const PERIOD_BUTTONS = Markup.inlineKeyboard([
 ])
 
 const STATS_BTNS = [
-  [Markup.button.callback('Сумма в обороте', 'circulation')],
-  [Markup.button.callback('Чистая прибыль', 'netProfit')],
+  [Markup.button.callback('Сумма в обороте', 'circulation'), Markup.button.callback('Чистая прибыль', 'profit')],
+  [Markup.button.callback('Оплаченные платежи', 'netProfit')],
   [Markup.button.callback('Продажи сотрудников', 'empSales')],
-  [Markup.button.callback('Архив продаж', 'archive')],
-  [Markup.button.callback('🔙Назад', 'menu')]
+  [Markup.button.callback('🔙Назад', 'menu'), Markup.button.callback('Архив', 'archive')]
 ]
 
 const MARGIN_BUTTONS = [
@@ -54,41 +53,11 @@ const ASK_GUARANTOR_TEXT = `Введите данные поручителя(е�
 Номер телефона,
 Адрес`
 
-const GET_ALL_ORDERS = `SELECT  * FROM orders
-JOIN
-employees
-	ON orders.emp_id = employees.id
-WHERE is_complete = 1`
-
-const GET_EMPS_AND_ORDERS_SQL = `SELECT  emp_id, full_name, tg_id, title, orders.id 
-FROM orders
-JOIN
-employees
-	ON orders.emp_id = employees.id
-WHERE orders.id = (?)`
-
-const GET_CUSTOMER_SQL = `SELECT * FROM customers`
-
-const GET_EMPLOYEES_SQL = 'SELECT * FROM employees'
-
-const GET_ORDER_SQL = 'SELECT * FROM orders WHERE title = (?) AND monthly_pay = (?)'
-
 const INSERT_PAYMENTS_SQL = 'INSERT INTO payments (order_id, payment_sum, payment_date, is_paid) VALUES (?,?,?,?)'
 
 const ORDER_INSERT_SQL = `INSERT INTO orders(title, cost, order_sum, customer_id, period, monthly_pay, photo_id, emp_id, is_complete, guarantor_info) VALUES (?,?,?,?,?,?,?,?,?,?)`
 
 const CUSTOMER_INSERT_SQL = `INSERT INTO customers (last_name, first_name, address, phone, comment, is_bad, customer_photo) VALUES (?,?,?,?,?,?,?)`
-
-const GET_ORDER_INFO_SQL = `SELECT * FROM 
-orders
-JOIN 
-customers
-  USING (customer_id)
-JOIN
-payments
-  ON payments.order_id = orders.id
-WHERE order_id = (?) 
-ORDER BY payment_date`
 
 const GET_UNPAID_PAYMENTS_SQL = `SELECT * FROM payments WHERE order_id = (?) AND is_paid = 0 ORDER BY payment_date`
 
@@ -96,11 +65,8 @@ const GET_CIRCULAR_SQL = `SELECT SUM(payment_sum) as circular FROM payments WHER
 
 const GET_NET_PROFIT_SQL = `SELECT SUM(payment_sum) as net_profit FROM payments WHERE is_paid = 1`
 
-const UPDATE_PAYMENTS_SQL = `UPDATE payments SET is_paid = 1 WHERE payment_id = (?)`
+const GET_PROFIT_SQL = `SELECT SUM(order_sum - cost) as net_profit FROM orders WHERE is_complete = 1`
 
-const UPDATE_ORDER_IS_PAYED_SQL = `UPDATE orders SET is_complete = 1 WHERE id = (?)`
-
-const UPDATE_COMMENT_SQL = `UPDATE orders SET order_comment = (?) WHERE id = (?)`
 
 const GET_EMPLOYEES_SALES_SQL = `SELECT  full_name, phone, sum(payment_sum) as sum FROM
 orders
@@ -124,6 +90,43 @@ payments
 WHERE is_paid = 0 AND is_complete = 0
 ORDER BY payment_date`
 
+const GET_ALL_ORDERS = `SELECT  * FROM orders
+JOIN
+employees
+	ON orders.emp_id = employees.id
+WHERE is_complete = 1`
+
+const GET_EMPS_AND_ORDERS_SQL = `SELECT  emp_id, full_name, tg_id, title, orders.id 
+FROM orders
+JOIN
+employees
+	ON orders.emp_id = employees.id
+WHERE orders.id = (?)`
+
+const GET_CUSTOMER_SQL = `SELECT * FROM customers`
+
+const GET_EMPLOYEES_SQL = 'SELECT * FROM employees'
+
+const GET_ORDER_SQL = 'SELECT * FROM orders WHERE title = (?) AND monthly_pay = (?)'
+
+const GET_ORDER_INFO_SQL = `SELECT * FROM 
+orders
+JOIN 
+customers
+  USING (customer_id)
+JOIN
+payments
+  ON payments.order_id = orders.id
+WHERE order_id = (?) 
+ORDER BY payment_date`
+
+const UPDATE_PAYMENTS_SQL = `UPDATE payments SET is_paid = 1 WHERE payment_id = (?)`
+
+const UPDATE_ORDER_IS_PAYED_SQL = `UPDATE orders SET is_complete = 1 WHERE id = (?)`
+
+const UPDATE_COMMENT_SQL = `UPDATE orders SET order_comment = (?) WHERE id = (?)`
+
+
 module.exports = {
   PERIOD_BUTTONS,
   STATS_BTNS,
@@ -144,6 +147,7 @@ module.exports = {
   GET_UNPAID_PAYMENTS_SQL,
   GET_CIRCULAR_SQL,
   GET_NET_PROFIT_SQL,
+  GET_PROFIT_SQL,
   UPDATE_PAYMENTS_SQL,
   LEAVE_WIZARD_BTN,
   UPDATE_ORDER_IS_PAYED_SQL,

@@ -227,18 +227,18 @@ checkInfoStep.on('message', async (ctx) => {
     ctx.session.data.photo = ctx.message.photo[ctx.message.photo.length - 1].file_id
     await bot.telegram.sendPhoto(ctx.chat.id, `${ctx.session.data.photo}`, {caption: `
 👤
-└Покупатель: ${ctx.session.data.customerFullName}
-└Адрес: ${ctx.session.data.address}
-└Номер телефона: ${ctx.session.data.phone}
+└${ctx.session.data.customerFullName}
+└📍${ctx.session.data.address}
+└📞: ${ctx.session.data.phone}
 
 <b><i>${ctx.session.data.title}</i></b>
-  └Стоимость: <b>${ctx.session.data.cost}</b>
-  └Период: <b>${ctx.session.data.period}</b>
-  └Наценка: <b>${ctx.session.data.margin}</b> 
-  └Общая сумма: <b>${ctx.session.data.sum}</b>
-  └Eжемесячный платёж: <b>${ctx.session.data.monthlyPay}</b>
+  └Стоимость: <b>${ctx.session.data.cost} ₽</b>
+  └Период: <b>${ctx.session.data.period} мес.</b>
+  └Наценка: <b>${ctx.session.data.margin} %</b> 
+  └Общая сумма: <b>${ctx.session.data.sum} ₽</b>
+  └Eжемесячный платёж: <b>${ctx.session.data.monthlyPay} ₽</b>
 
-Данные поручителя(ей): ${ctx.session.data.guarantorData}`,
+Поручитель(и): ${ctx.session.data.guarantorData}`,
 parse_mode: 'HTML',
 reply_markup: {inline_keyboard: constants.CHOICE_BUTTONS} })
 await ctx.wizard.next()
