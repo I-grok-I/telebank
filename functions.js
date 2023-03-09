@@ -82,7 +82,7 @@ const getProfit = async (ctx) => {
  try {
   db.get(constants.GET_PROFIT_SQL, [], async (err, row) => {
     if(err) await ctx.reply(err.message)
-    await ctx.answerCbQuery(`Чистая прибыль: \n${row.net_profit}₽ \n (с оплаченных заказов)` ?? 'Данные для статистики отсутствуют..', {show_alert: true})
+    await ctx.answerCbQuery(`Чистая прибыль: \n${row.net_profit}₽ \n` ?? 'Данные для статистики отсутствуют..', {show_alert: true})
   })
  } catch (e) {
   console.log(e.message)
