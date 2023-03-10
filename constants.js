@@ -120,7 +120,7 @@ payments
 WHERE order_id = (?) 
 ORDER BY payment_date`
 
-const GET_CUSTOMER_INFO = `SELECT * FROM customers JOIN orders ON customers.order_id = orders.id WHERE orders.id = (?)` 
+const GET_CUSTOMER_INFO = `SELECT * FROM customers JOIN orders ON customers.customer_id = orders.customer_id WHERE orders.id = (?)` 
 
 
 const UPDATE_PAYMENTS_SQL = `UPDATE payments SET is_paid = 1 WHERE payment_id = (?)`

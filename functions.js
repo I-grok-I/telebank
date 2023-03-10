@@ -423,15 +423,17 @@ const showMenu = async (ctx) => {
 }
 
 const showCustomer = async (ctx) => {
-  db.get(constants.GET_CIRCULAR_SQL, [ctx.match[1]], async (err, row) => {
+  db.get(constants.GET_CUSTOMER_INFO, ctx.match[1], async (err, row) => {
     if (err) console.log(err.message);
     ctx.telegram.sendPhoto(ctx.chat.id, row.customer_photo, {caption: 
-`👤
-└${row.last_name} ${row.first_name}
-└${row.phone}
-└${row.address}
+`👤 ${row.last_name} ${row.first_name}
+📞 ${row.phone}
+📍 ${row.address}
 
-Комментарий: ${row.comment}`})
+📝 ${row.comment}`, 
+reply_markup:{inline_keyboard:[ [{text:"Назад", callback_data:`order:${row.id}`}] ]}
+    })
+    console.log(row.id);
   })
 }
 
