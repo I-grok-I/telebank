@@ -285,9 +285,10 @@ const showDealData = async (ctx, currentOrder) => {
   Поручитель: ${guarantor_info}
   
   Комментарий: ${comment}`, parse_mode: 'HTML', reply_markup:{inline_keyboard: [
-        [{text:'Подтвердить оплату', callback_data: `payAMonth:${currentOrder}`}],
-        [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
+        [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
         [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
+        [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
+        [{text:'Покупатель', callback_data: `showCustomer:${currentOrder}`}],
         [{text:'🔙Назад', callback_data: 'menu'}],
         ]}
       })
@@ -349,9 +350,10 @@ const payAMonth = async (ctx) => {
   Поручитель: ${guarantor_info}
   
   Комментарий: ${comment}`, parse_mode: 'HTML', reply_markup: {inline_keyboard: [
-            [{text:'Подтвердить оплату', callback_data: `payAMonth:${currentOrder}`}],
-            [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
+            [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
             [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
+            [{text:'Покупатель', callback_data: `showCustomer:${currentOrder}`}],
+            [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
             [{text:'Назад', callback_data: 'menu'}],
             ]}
           })
@@ -420,6 +422,19 @@ const showMenu = async (ctx) => {
   }
 }
 
+const showCustomer = async (ctx) => {
+  db.get(constants.GET_CIRCULAR_SQL, [ctx.match[1]], async (err, row) => {
+    if (err) console.log(err.message);
+    ctx.telegram.sendPhoto(ctx.chat.id, row.customer_photo, {caption: 
+`👤
+└${row.last_name} ${row.first_name}
+└${row.phone}
+└${row.address}
+
+Комментарий: ${row.comment}`})
+  })
+}
+
 
 module.exports = {
   getNet, 
@@ -438,5 +453,6 @@ module.exports = {
   payAMonth,
   showMenu,
   catchErrs,
-  getProfit
+  getProfit,
+  showCustomer
 }

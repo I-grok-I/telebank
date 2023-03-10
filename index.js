@@ -22,6 +22,7 @@ bot
 .action( 'orderList', async (ctx) =>  fns.showDealsList(ctx) )
 .action( /order:(.*)/, async (ctx) => {await ctx.answerCbQuery(); await fns.showDealData(ctx, ctx.match[1]) })
 .action( /payAMonth:(.*)/, async (ctx) => fns.payAMonth(ctx) )
+.action( /showCustomer:(.*)/, async (ctx) => fns.showCustomer(ctx) )
 .action( /updateComment:(.*)/, async (ctx) => fns.updateComment(ctx) )
 .action( 'employees', async (ctx) => fns.showEmployees(ctx) )
 .action( /employee:(.*)/, async (ctx) => fns.showEmployee(ctx) )

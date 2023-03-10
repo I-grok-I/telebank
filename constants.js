@@ -120,6 +120,9 @@ payments
 WHERE order_id = (?) 
 ORDER BY payment_date`
 
+const GET_CUSTOMER_INFO = `SELECT * FROM customers JOIN orders ON customers.order_id = orders.id WHERE orders.id = (?)` 
+
+
 const UPDATE_PAYMENTS_SQL = `UPDATE payments SET is_paid = 1 WHERE payment_id = (?)`
 
 const UPDATE_ORDER_IS_PAYED_SQL = `UPDATE orders SET is_complete = 1 WHERE id = (?)`
@@ -154,6 +157,7 @@ module.exports = {
   UPDATE_COMMENT_SQL,
   GET_EMPLOYEES_SALES_SQL,
   GET_ALL_ORDERS_AND_PAYMENTS,
-  CHOOSE_START_MON_BTNS
+  CHOOSE_START_MON_BTNS,
+  GET_CUSTOMER_INFO
   }
 
