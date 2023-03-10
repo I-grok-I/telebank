@@ -288,8 +288,7 @@ const showDealData = async (ctx, currentOrder) => {
         [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
         [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
         [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
-        [{text:'Покупатель', callback_data: `showCustomer:${currentOrder}`}],
-        [{text:'🔙Назад', callback_data: 'menu'}],
+        [{text:'🔙Назад', callback_data: 'menu'},{text:'👤', callback_data: `showCustomer:${currentOrder}`}],
         ]}
       })
     })
@@ -352,9 +351,8 @@ const payAMonth = async (ctx) => {
   Комментарий: ${comment}`, parse_mode: 'HTML', reply_markup: {inline_keyboard: [
             [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
             [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
-            [{text:'Покупатель', callback_data: `showCustomer:${currentOrder}`}],
             [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
-            [{text:'Назад', callback_data: 'menu'}],
+            [{text:'Назад', callback_data: 'menu'}, {text:'👤', callback_data: `showCustomer:${currentOrder}`}],
             ]}
           })
         })
