@@ -21,7 +21,7 @@ start.on('message', async (ctx) => {
               console.log('даты обновлены');
             })
           }
-          await ctx.answerCbQuery('✅ День оплаты обновлен', {show_alert: true})
+          await ctx.reply('✅ День оплаты обновлен', {show_alert: true})
           await fns.showDealData(ctx, currentOrder)
           await ctx.scene.leave()
         })
