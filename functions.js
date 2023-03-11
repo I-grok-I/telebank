@@ -136,7 +136,23 @@ const updateComment = async (ctx) => {
       await ctx.reply(`Введите новый комментарий для ${row.title}`)
       await ctx.scene.enter('updateCommentScene')
     })
-    await ctx.scene.enter('updateCommentScene')
+    // await ctx.scene.enter('updateCommentScene')
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+const updateDates = async (ctx) => {
+  try {
+    await ctx.answerCbQuery()
+    let [,currentOrder] = ctx.match
+    ctx.session.data = {}
+    ctx.session.data.currentOrder = currentOrder
+    db.get(constants.GET_ORDER_INFO_SQL, [currentOrder], async (err, row) => {
+      if (err) await ctx.reply(err.message)
+      await ctx.reply(`Введите день оплат для ${row.title}`)
+      await ctx.scene.enter('updateDatesScene')
+    })
   } catch (e) {
     console.log(e.message);
   }
@@ -288,6 +304,7 @@ const showDealData = async (ctx, currentOrder) => {
         [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
         [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
         [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
+        [{text:'Изменить даты', callback_data: `updateDates:${currentOrder}`}],
         [{text:'🔙Назад', callback_data: 'menu'},{text:'👤', callback_data: `showCustomer:${currentOrder}`}],
         ]}
       })
@@ -352,6 +369,7 @@ const payAMonth = async (ctx) => {
             [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
             [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
             [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
+            [{text:'Изменить даты', callback_data: `updateDates:${currentOrder}`}],
             [{text:'Назад', callback_data: 'menu'}, {text:'👤', callback_data: `showCustomer:${currentOrder}`}],
             ]}
           })
@@ -454,5 +472,6 @@ module.exports = {
   showMenu,
   catchErrs,
   getProfit,
-  showCustomer
+  showCustomer,
+  updateDates
 }

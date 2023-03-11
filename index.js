@@ -3,12 +3,13 @@ require('dotenv').config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const db = require('./db/db')
 const fns = require('./functions');
+const updateDatesScene = require('./scenes/updateDatesScene')
 const insertPaymentScene = require('./scenes/insertPaymentScene');
 const addNewEmpScene = require('./scenes/addNewEmpScene');
 const newDealOldDebtorScene = require('./scenes/newDealOldDebtorScene');
 const newDealNewDebtorScene = require('./scenes/newDealNewDebtorScene');
 const updateCommentScene = require('./scenes/updateCommentScene');
-const stage = new Scenes.Stage([addNewEmpScene, newDealOldDebtorScene, newDealNewDebtorScene, updateCommentScene, insertPaymentScene])
+const stage = new Scenes.Stage([addNewEmpScene, newDealOldDebtorScene, newDealNewDebtorScene, updateCommentScene, insertPaymentScene, updateDatesScene])
 
 
 
@@ -27,6 +28,7 @@ bot
 .action( 'employees', async (ctx) => fns.showEmployees(ctx) )
 .action( /employee:(.*)/, async (ctx) => fns.showEmployee(ctx) )
 .action( /deleteEmp:([0-9]+)/, async (ctx) => fns.deleteEmp(ctx) )
+.action(/updateDates:(.*)/, async (ctx) => fns.updateDates(ctx))
 .action( 'stats', async (ctx) => fns.showStats(ctx) )
 .action( 'circulation', async (ctx)=> fns.getCirculation(ctx) )
 .action( 'netProfit', async (ctx) => fns.getNet(ctx) )
