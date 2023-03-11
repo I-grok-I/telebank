@@ -304,7 +304,7 @@ const showDealData = async (ctx, currentOrder) => {
         [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
         [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
         [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
-        [{text:'Изменить даты', callback_data: `updateDates:${currentOrder}`}],
+        [{text:'Изменить дни платежей', callback_data: `updateDates:${currentOrder}`}],
         [{text:'🔙Назад', callback_data: 'menu'},{text:'👤', callback_data: `showCustomer:${currentOrder}`}],
         ]}
       })
@@ -369,7 +369,7 @@ const payAMonth = async (ctx) => {
             [{text:'Оплатить месяц', callback_data: `payAMonth:${currentOrder}`}],
             [{text:'Внести сумму', callback_data: `insertPayment:${currentOrder}`}],
             [{text:'Изменить комментарий', callback_data: `updateComment:${currentOrder}`}],
-            [{text:'Изменить даты', callback_data: `updateDates:${currentOrder}`}],
+            [{text:'Изменить дни платежей', callback_data: `updateDates:${currentOrder}`}],
             [{text:'Назад', callback_data: 'menu'}, {text:'👤', callback_data: `showCustomer:${currentOrder}`}],
             ]}
           })
