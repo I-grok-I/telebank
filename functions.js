@@ -447,7 +447,7 @@ const showCustomer = async (ctx) => {
 📍 ${row.address}
 
 📝 ${row.comment}`, 
-reply_markup:{inline_keyboard:[ [{text:"Назад", callback_data:`order:${row.id}`}] ]}
+reply_markup:{inline_keyboard:[ [{text:"Назад", callback_data:`deleteThisMsg`}] ]}
     })
     console.log(row.id);
   })
