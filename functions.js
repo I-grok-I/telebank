@@ -480,7 +480,7 @@ const getDealsAbc = async (ctx) => {
 const getALetterOrders = async (ctx) => {
   try {
     let letter = ctx.match[1]
-    let sql = `SELECT * FROM orders JOIN customers USING (customer_id) JOIN payments ON payments.order_id = orders.id WHERE is_complete = 0 AND last_name like '${letter.toLowerCase()}%' OR last_name like '${letter.toUpperCase()}%'`
+    let sql = `SELECT * FROM orders JOIN customers USING (customer_id) JOIN payments ON payments.order_id = orders.id WHERE is_complete = 0 AND is_paid = 0 AND (last_name like '${letter.toLowerCase()}%' OR last_name like '${letter.toUpperCase()}%')`
     db.all(sql, [], async (err, rows) => {
       if (err) console.log(err.message);
       let buttons = rows.map((item) => {
