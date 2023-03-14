@@ -20,7 +20,7 @@ bot
 .start( async (ctx) => fns.startBot(ctx) )
 .command( 'getid', async (ctx) => ctx.replyWithHTML(`Ваш Telegram ID: <code>${ctx.message.from.id}</code>`) )
 .action( 'menu', async (ctx) => fns.showMenu(ctx) )
-.action( 'orderList', async (ctx) =>  fns.showDealsList(ctx) )
+// .action( 'orderList', async (ctx) =>  fns.showDealsList(ctx) )
 .action('deleteThisMsg', async (ctx) => {await ctx.answerCbQuery();await ctx.deleteMessage()})
 .action( /order:(.*)/, async (ctx) => {await ctx.answerCbQuery(); await fns.showDealData(ctx, ctx.match[1]) })
 .action( /payAMonth:(.*)/, async (ctx) => fns.payAMonth(ctx) )
@@ -41,7 +41,14 @@ bot
 .action('newDealNewDebtor', async (ctx) => {await ctx.answerCbQuery(); await ctx.scene.enter('newDealNewDebtorScene')})
 .action('addNewEmployee', async (ctx) => {await ctx.answerCbQuery(); await ctx.scene.enter('addNewEmpScene')})
 .action(/insertPayment:(.*)/, async (ctx) => {await ctx.answerCbQuery(); await ctx.scene.enter('insertPaymentScene')})
-
+.action('orderList', async (ctx) =>{
+    await ctx.answerCbQuery()
+    fns.getDealsAbc(ctx)
+})
+.action(/orders:(.*)/, async (ctx) => {
+    await ctx.answerCbQuery()
+    fns.getALetterOrders(ctx)
+})
 
 
 

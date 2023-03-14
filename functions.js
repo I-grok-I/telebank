@@ -453,6 +453,53 @@ reply_markup:{inline_keyboard:[ [{text:"Назад", callback_data:`deleteThisMs
   })
 }
 
+const getDealsAbc = async (ctx) => {
+  try {
+    db.all(constants.GET_ALL_ORDERS_AND_PAYMENTS, [], async (err, rows) => {
+        if (err) await ctx.reply(err.message)
+        let buttons = rows.map((item) => {
+          let today = new Date()
+          let payday =  new Date(`${item.payment_date}`)
+          let daysLeft = Math.ceil((payday.getTime() - today.getTime())/(1000 * 3600 * 24)+1)
+          if (daysLeft < 4 && daysLeft > 0) return Markup.button.callback(`${item.last_name[0].toUpperCase()} 🟠`, `orders:${item.last_name[0]}`)
+          else if (daysLeft < 1 ) return Markup.button.callback(`${item.last_name[0].toUpperCase()} 🔴`, `orders:${item.last_name[0]}`)
+          else return Markup.button.callback(`${item.last_name[0].toUpperCase()}`, `orders:${item.last_name[0]}`)
+        }).filter((item, index, arr) => index === arr.findIndex(i =>  i.text[0] === item.text[0])).sort((a, b) =>  a.text.charAt(0).localeCompare(b.text.charAt(0)))
+        
+        let newButtons = [];
+        while (buttons.length) newButtons.push(buttons.splice(0, 4));
+
+        newButtons.push([Markup.button.callback(`🔙Назад`, `menu`)])
+        await ctx.editMessageText('Алфавит заказов', Markup.inlineKeyboard(newButtons))
+      })  
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+const getALetterOrders = async (ctx) => {
+  try {
+    let letter = ctx.match[1]
+    let sql = `SELECT * FROM orders JOIN customers USING (customer_id) JOIN payments ON payments.order_id = orders.id WHERE is_complete = 0 AND last_name like '${letter.toLowerCase()}%' OR last_name like '${letter.toUpperCase()}%'`
+    db.all(sql, [], async (err, rows) => {
+      if (err) console.log(err.message);
+      let buttons = rows.map((item) => {
+        let today = new Date()
+        let payday =  new Date(`${item.payment_date}`)
+        let daysLeft = Math.ceil((payday.getTime() - today.getTime())/(1000 * 3600 * 24)+1)
+        if (daysLeft < 4 && daysLeft > 0) return Markup.button.callback(`🟠${item.last_name} ${item.first_name[0]}.`, `order:${item.order_id}`)
+        else if (daysLeft < 1 ) return Markup.button.callback(`🔴${item.last_name} ${item.first_name[0]}.`, `order:${item.order_id}`)
+        else return Markup.button.callback(`${item.last_name} ${item.first_name[0]}.`, `order:${item.order_id}`)
+      }).filter((item, index, arr) => index === arr.findIndex(i =>  i.callback_data === item.callback_data));
+      let newButtons = [];
+      while (buttons.length) newButtons.push(buttons.splice(0, 2));
+      newButtons.push([Markup.button.callback(`🔙Назад`, `orderList`)])
+      await ctx.editMessageText('Текущие заказы', Markup.inlineKeyboard(newButtons))
+    })
+  } catch (e) {
+    console.log(e.message);
+  }
+}
 
 module.exports = {
   getNet, 
@@ -473,5 +520,7 @@ module.exports = {
   catchErrs,
   getProfit,
   showCustomer,
-  updateDates
+  updateDates,
+  getDealsAbc,
+  getALetterOrders
 }

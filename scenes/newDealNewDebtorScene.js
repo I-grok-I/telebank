@@ -28,7 +28,7 @@ askLastName.on('message', async (ctx) => {
     await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
     await ctx.scene.leave()
   } else if (ctx.message.text.length > 3) {
-    ctx.session.data.newCustomerFirstName = ctx.message.text
+    ctx.session.data.newCustomerFirstName = ctx.message.text.replace(ctx.message.text[0], ctx.message.text[0].toUpperCase())
     await ctx.reply('Введите фамилию покупателя', constants.LEAVE_WIZARD_BTN)
     await ctx.wizard.next()
   } else {
@@ -42,7 +42,7 @@ askAddress.on('message', async (ctx) => {
     await ctx.reply('Главное меню', constants.MAIN_MENU_BTNS)
     await ctx.scene.leave()
   } else if (ctx.message.text.length > 3) {
-      ctx.session.data.newCustomerLastName = ctx.message.text
+      ctx.session.data.newCustomerLastName = ctx.message.text.replace(ctx.message.text[0], ctx.message.text[0].toUpperCase())
       await ctx.reply('Введите адрес покупателя', constants.LEAVE_WIZARD_BTN)
       await ctx.wizard.next()
     } else {
